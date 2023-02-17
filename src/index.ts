@@ -18,7 +18,6 @@ class CsvTableRotator {
     public constructor(path: string, options: OptionsArgs) {
         this.options = {
             way: options.way ?? 'right',
-            times: options.times ?? 1,
         };
 
         this.csvInputStream = csvIn.createStream({ enclosedChar: '"' });
@@ -74,7 +73,7 @@ class CsvTableRotator {
 
         const tableRotator = new TableRotator(table);
         const methodName = 'rotate' + capitalizeString(this.options.way);
-        tableRotator[methodName](this.options.times);
+        tableRotator[methodName]();
 
         this.csvOutputStream.write({
             id: row.id,

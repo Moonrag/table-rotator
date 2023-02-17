@@ -2,94 +2,94 @@ import { Table } from "./types";
 
 export class TableRotator {
     private table: Table;
-    private squaresIndexes: number[][] = [];
 
     public constructor(table: Table) {
         this.table = table;
-        this.buildSquaresIndexes();
     }
 
     public getTable(): Table {
         return this.table;
     }
 
-    public rotateRight(times: number = 1): Table {
-        const calculateShiftedIndex = (index: number, length: number): number => {
-            const reducedTimes = times % length;
-            return index + reducedTimes >= length
-                ? index + reducedTimes - length
-                : index + reducedTimes;
-        }
-
-        this.performRotation(calculateShiftedIndex);
-
-        return this.table;
-    }
-
-    public rotateLeft(times: number = 1): Table {
-        const calculateShiftedIndex = (index: number, length: number): number => {
-            const reducedTimes = times % length;
-            return index - reducedTimes < 0
-                ? length + index - reducedTimes
-                : index - reducedTimes;
-        }
-
-        this.performRotation(calculateShiftedIndex);
-
-        return this.table;
-    }
-
-    private buildSquaresIndexes() {
+    public rotateRight(): Table {
         const tableSideLength = Math.sqrt(this.table.length);
         const squaresAmount = Math.trunc(tableSideLength / 2);
 
         for (let i = 0; i < squaresAmount; i++) {
-            let currentPoint = (tableSideLength + 1) * i;
-            const unfoldedSquare: number[] = [];
-
             const squareLength = tableSideLength - (i * 2);
             const unfoldedSquareLength = squareLength * 4 - 4;
 
-            for (let j = 0; j < unfoldedSquareLength; j++) {
-                unfoldedSquare.push(currentPoint);
+            const firstPointIndex = (tableSideLength + 1) * i;
+            const replacingQueue = [firstPointIndex];
+            const backupedValue = this.table[firstPointIndex];
+
+            let currentPointIndex = firstPointIndex + tableSideLength; // step down always be +tableSideLength
+
+            for (let j = 1; j < unfoldedSquareLength; j++) {
+                replacingQueue.push(currentPointIndex);
+                this.table[replacingQueue.shift()] = this.table[currentPointIndex];
 
                 if (j < squareLength - 1) {
-                    currentPoint += 1;
+                    currentPointIndex += tableSideLength;
                     continue;
                 }
 
                 if (j < squareLength * 2 - 2) {
-                    currentPoint += tableSideLength;
+                    currentPointIndex += 1;
                     continue;
                 }
 
                 if (j < squareLength * 3 - 3) {
-                    currentPoint -= 1;
+                    currentPointIndex -= tableSideLength;
                     continue;
                 }
 
-                currentPoint -= tableSideLength;
+                currentPointIndex -= 1;
             }
-            this.squaresIndexes.push(unfoldedSquare);
+            this.table[replacingQueue.shift()] = backupedValue;
         }
+
+        return this.table;
     }
 
-    private performRotation(calculateShiftedIndex: (index: number, length: number) => number) {
-        const replaceMap = {};
+    public rotateLeft(): Table {
+        const tableSideLength = Math.sqrt(this.table.length);
+        const squaresAmount = Math.trunc(tableSideLength / 2);
 
-        this.squaresIndexes.forEach(singleSquareIndexes => {
-            const length = singleSquareIndexes.length;
-            singleSquareIndexes.forEach((indexFrom, index) => {
-                const indexTo = singleSquareIndexes[calculateShiftedIndex(index, length)];
-                replaceMap[indexTo] = this.table[indexFrom];
-            })
-        });
+        for (let i = 0; i < squaresAmount; i++) {
+            const squareLength = tableSideLength - (i * 2);
+            const unfoldedSquareLength = squareLength * 4 - 4;
 
-        if (this.table.length % 2 === 1) {
-            const middleElementIndex = (this.table.length - 1) / 2;
-            replaceMap[middleElementIndex] = this.table[middleElementIndex];
+            const firstPointIndex = (tableSideLength + 1) * i;
+            const replacingQueue = [firstPointIndex];
+            const backupedValue = this.table[firstPointIndex];
+
+            let currentPointIndex = firstPointIndex + 1; // step right always be +1
+
+            for (let j = 1; j < unfoldedSquareLength; j++) {
+                replacingQueue.push(currentPointIndex);
+                this.table[replacingQueue.shift()] = this.table[currentPointIndex];
+
+                if (j < squareLength - 1) {
+                    currentPointIndex += 1;
+                    continue;
+                }
+
+                if (j < squareLength * 2 - 2) {
+                    currentPointIndex += tableSideLength;
+                    continue;
+                }
+
+                if (j < squareLength * 3 - 3) {
+                    currentPointIndex -= 1;
+                    continue;
+                }
+
+                currentPointIndex -= tableSideLength;
+            }
+            this.table[replacingQueue.shift()] = backupedValue;
         }
 
-        this.table = Object.values(replaceMap);
+        return this.table;
     }
 }

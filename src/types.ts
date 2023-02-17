@@ -1,6 +1,5 @@
 export interface OptionsArgs {
     way?: 'right' | 'left',
-    times?: number,
 }
 
 export type Header = [

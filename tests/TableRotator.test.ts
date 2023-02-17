@@ -21,13 +21,6 @@ describe('testing TableRotator class', () => {
             .toEqual([6, 1, 2, 3, 4, 11, 12, 7, 8, 5, 16, 17, 13, 9, 10, 21, 18, 19, 14, 15, 22, 23, 24, 25, 20]);
     });
 
-    test('rotate 2x2 table right 4 times', () => {
-        const initialTable = createSimpleArray(2 * 2);
-        const table = new TableRotator(initialTable);
-        expect(table.rotateRight(4))
-            .toEqual(initialTable);
-    });
-
     test('rotate 3x3 table right and get it with getTable method', () => {
         const table = new TableRotator(createSimpleArray(3 * 3));
         table.rotateRight();
