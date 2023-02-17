@@ -35,11 +35,11 @@ console.log(tableRotator.rotateLeft(2));
 ```
 
 ### CLI
-`node build/cli.js input.csv > output.csv`
+`node dist/cli.js input.csv > output.csv`
 
 or with options:
 
-`node build/cli.js input.csv {"way":"left","times":5} > output.csv`
+`node dist/cli.js input.csv {"way":"left","times":5} > output.csv`
 
 ## How it works?
 
