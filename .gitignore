@@ -1,0 +1,8 @@
+node_modules
+*.iml
+.DS_Store
+.idea
+build
+coverage
+**/*.tsbuildinfo
+/dist/
